@@ -1,0 +1,34 @@
+from validate_docbr import CPF, CNPJ
+
+cpf = CPF()
+cnpj = CNPJ()
+
+# Validar CPF
+numcpf = "56690614972"
+if cpf.validate(numcpf) == True:
+    print('CPF verdadeiro')
+else:
+    print('CPF falso')
+
+# Mascara o CPF
+cpf.mask(numcpf)
+print(cpf.mask(numcpf))
+
+# Validar CNPJ
+numcnpj = "23035903000103"
+if cnpj.validate(numcnpj) == True:
+    print('CNPJ verdadeiro')
+else:
+    print('CNPJ falso')
+
+# Mascara o CNPJ
+cnpj.mask(numcnpj)
+print(cnpj.mask(numcnpj))
+
+import validate_docbr as docbr
+
+
+# Validar diferentes documentos
+docs = [(docbr.CPF, '90396100457'), (docbr.CNPJ, '49910753848365')]
+docbr.validate_docs(docs)  # [True, False]
+print(docbr.validate_docs(docs))

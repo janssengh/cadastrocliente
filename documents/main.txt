@@ -1,0 +1,144 @@
+#https://docs.python.org/3/library/exceptions.html
+import ctypes
+import json
+import re
+
+from flask import render_template, request
+
+from config import app, db, lista
+from forms import FormClient
+from models import Client2
+
+
+regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
+
+@app.route('/')
+def home():
+    #cria todas as tabelas (login) no banco de dados
+    db.create_all()
+    #carrega todos os dados de login
+    lista = Client2.query.all()
+    return render_template('initial.html', lista=lista)
+
+@app.route('/cadastrar', methods=['GET', 'POST'])
+def cadastrar():
+    form = FormClient()
+    return render_template('formclient.html', form=form)
+
+@app.route('/validacoes', methods=['GET', 'POST'])
+def validacoes():
+    return render_template('validates.html')
+
+@app.route('/inputcheck', methods=['GET','POST'])
+def inputcheck():
+    output = request.get_json()
+    result = json.loads(output) #this converts the json output to a python dictionary
+    username_list = ['joe','john']
+    if result['username'] in username_list:
+        MessageBox = ctypes.windll.user32.MessageBoxW(0, 'Nome usuário ' + result['username'] + ' ' + 'já existe', "Username check", 0x00001000)
+        return render_template('various.html')
+    elif result['username'] == '':
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Entrada obrigatória para nome de usuário !', 'Username check', 0x00001000)
+    else:
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Usuário ' + result['username'] + ' ' + 'não confere', 'Username check', 0x00001000)
+
+@app.route('/inputvalidation', methods=['GET','POST'])
+def inputvalidation():
+    output = request.get_json()
+    result = json.loads(output) #this converts the json output to a python dictionary
+    if result['username'].isdecimal():
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Nome usuário não pode ser numérico !',"Number check", 0x00001000)
+    elif result['username'] == '':
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Entrada obrigatória para nome de usuário !', "Number check",0x00001000)
+    else:
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Nome usuário informado corretamente !', "Number check", 0x00001000)
+    return render_template('index.html')
+
+@app.route('/passvalidation', methods=['GET','POST'])
+def passvalidation():
+    output = request.get_json()
+    result = json.loads(output) #this converts the json output to a python dictionary
+    if result['password'].isdecimal():
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Sua senha não pode ser somente numérico',"Password check", 0x00001000)
+    elif result['password'] == '':
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Senha deve ser obrigatória', "Password empty check",0x00001000)
+    elif len(result['password']) < 5:
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Sua senha deve ser maior que 5 caracteres', "Password length check", 0x00001000)
+    else:
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'Sua senha foi informado corretamente', "Number check", 0x00001000)
+    return render_template('index.html')
+
+@app.route('/emailvalidation', methods=['GET','POST'])
+def emailvalidation():
+    output = request.get_json()
+    result = json.loads(output) #this converts the json output to a python dictionary
+    if re.search(regex, result['email']):
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'E-mail informado corretamente', "Email check", 0x00001000)
+    else:
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'E-mail inválido !', "Email check", 0x00001000)
+    return render_template('index.html')
+
+@app.route('/cpfcnpjvalidation', methods=['GET','POST'])
+def cpfcnpjvalidation():
+    output = request.get_json()
+    result = json.loads(output) #this converts the json output to a python dictionary
+
+    if result['cpf_cnpj'].isdecimal():
+        cpfcnpj = Document()
+        cpfcnpj.create_document(result['cpf_cnpj'])
+    else:
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'CPF/CNPJ inválido !', "Email check", 0x00001000)
+    return render_template('formclient erro.html')
+
+@app.route('/salvar', methods=['GET', 'POST'])
+def salvar():
+    form = FormClient()
+
+    if form.validate_on_submit():
+        code = form.code.data
+        name = form.name.data
+        username = form.username.data
+        email = form.email.data
+        profile = form.profile.data
+        zipcode = form.zipcode.data
+        address = form.address.data
+        number = form.number.data
+        complement = form.complement.data
+        neighborhood = form.neighborhood.data
+        city = form.city.data
+        region = form.region.data
+        password = form.password.data
+        if len(form.code.data) > 11:
+            type = 'J'
+        else:
+            type = 'F'
+
+        if Client2.query.filter_by(code=code).first():
+            form.code.errors.clear()
+            form.code.errors.append('Cliente já cadastrado!')
+            return render_template('formclient.html', form=form)
+        else:
+            # cria dicionário
+            DicItem = {'code':code, 'name':name, 'username':username,'email':email,
+                                   'profile':profile, 'zipcode':zipcode, 'address':address,
+                                   'number':number, 'complement':complement, 'neighborhood':neighborhood,
+                                   'city':city, 'region':region, 'password':password, 'type':type
+                                   }
+            print(DicItem)
+            # salva o cadastro no banco
+            cadastro = Client2(code, name, username, email, profile, zipcode, address, number, complement,
+                               neighborhood, city, region, password, type)
+            db.session.add(cadastro)
+            db.session.commit()
+            lista.append(cadastro)
+            form.code.errors.clear()
+            form.code.errors.append('Cliente cadastrado com sucesso!')
+            return render_template('initial.html', lista=lista)
+    else:
+        print(form.errors)
+        return render_template('formclient.html', form=form)
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

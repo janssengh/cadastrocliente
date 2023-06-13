@@ -1,0 +1,150 @@
+<html lang="pt-br">
+
+<head>
+
+    <title>Data Analytics Ireland</title></head>
+<style>
+.button1 {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    width: 1000px;
+    height: 300px;
+    margin-left: -600px;
+    margin-top: -80px;
+}
+
+
+
+.labels {
+    position: absolute;
+    top: 50%;
+    left: 55%;
+    width: 1000px;
+    height: 300px;
+    margin-left: -600px;
+    margin-top: -150px;
+}
+
+</style>
+
+<body>
+
+
+
+<div class="labels" id="mem1" >
+    <label  for="username">Nome usuário:</label> <input type="text" id="username" name="username">
+    <label for="password">Senha:</label><input type="text" id="password" name="password">
+    <label for="email">E-mail:</label><input type="text" id="email" name="password">
+    <label for="cpf_cnpj">CPF/CNPJ:</label><input type="text" id="cpf_cnpj" name="cpf_cnpj">
+</div>
+
+
+<div class="button1" id="mem2" >
+    <button type="submit" onclick='myfunction();'>Valida geral nome usuário</button>
+    <button type="submit" onclick='myfunctionval();'>Valida se nome usuário são números</button>
+    <button type="submit" onclick='myfunctionpass();'>Valida a senha</button>
+    <button type="submit" onclick='myfunctionemail();'>Valida e-mail</button>
+    <button type="submit" onclick='myfunctionecpfcnpj();'>Valida CPF/CNPJ</button>
+</div>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+
+<script>
+    function myfunction() {
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+
+        const dict_values = {username, password} //Pass the javascript variables to a dictionary.
+        const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to JSON.
+        console.log(s); // Prints the variables to console window, which are in the JSON format
+        //window.alert(s)
+        $.ajax({
+            url:"/inputcheck",
+            type:"POST",
+            contentType: "application/json",
+            data: JSON.stringify(s)});
+}
+</script>
+<script>
+    function myfunctionval() {
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+
+        const dict_values = {username, password} //Pass the javascript variables to a dictionary.
+        const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to JSON.
+        console.log(s); // Prints the variables to console window, which are in the JSON format
+        //window.alert(s)
+        $.ajax({
+            url:"/inputvalidation",
+            type:"POST",
+            contentType: "application/json",
+            data: JSON.stringify(s)});
+}
+</script>
+
+<script>
+    function myfunctionpass() {
+
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+
+        const dict_values = {username, password} //Pass the javascript variables to a dictionary.
+        const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to JSON.
+        console.log(s); // Prints the variables to console window, which are in the JSON format
+        //window.alert(s)
+        $.ajax({
+            url:"/passvalidation",
+            type:"POST",
+            contentType: "application/json",
+            data: JSON.stringify(s)});
+}
+</script>
+
+<script>
+    function myfunctionemail() {
+
+        const email = document.getElementById("email").value;
+
+
+        const dict_values = {email} //Pass the javascript variables to a dictionary.
+        const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to JSON.
+        console.log(s); // Prints the variables to console window, which are in the JSON format
+        //window.alert(s)
+        $.ajax({
+            url:"/emailvalidation",
+            type:"POST",
+            contentType: "application/json",
+            data: JSON.stringify(s)});
+}
+</script>
+
+<script>
+    function myfunctionecpfcnpj() {
+
+        const cpf_cnpj = document.getElementById("cpf_cnpj").value;
+
+
+        const dict_values = {cpf_cnpj} //Pass the javascript variables to a dictionary.
+        const s = JSON.stringify(dict_values); // Stringify converts a JavaScript object or value to JSON.
+        console.log(s); // Prints the variables to console window, which are in the JSON format
+        //window.alert(s)
+        $.ajax({
+            url:"/cpfcnpjvalidation",
+            type:"POST",
+            contentType: "application/json",
+            data: JSON.stringify(s)});
+}
+</script>
+
+
+
+
+</body>
+</html>

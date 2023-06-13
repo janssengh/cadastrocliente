@@ -1,0 +1,11 @@
+Fazendo validações personalizados nos formulário DJANGO
+https://www.google.com/search?q=como+fazer+valida%C3%A7%C3%B5es+formul%C3%A1rio+html+no+python&biw=1366&bih=649&tbm=vid&ei=4O54ZIiTG6HK1sQP7f-QCA&ved=0ahUKEwiIg-HX5KL_AhUhpZUCHe0_BAEQ4dUDCA0&uact=5&oq=como+fazer+valida%C3%A7%C3%B5es+formul%C3%A1rio+html+no+python&gs_lcp=Cg1nd3Mtd2l6LXZpZGVvEAMyCgghEKABEMMEEAoyCgghEKABEMMEEAo6BQgAEKIEOggIABCJBRCiBFC_DVjhFGDXMGgAcAB4AIAB7wGIAYEKkgEFMC4xLjWYAQCgAQHAAQE&sclient=gws-wiz-video#fpstate=ive&vld=cid:1a6b9336,vid:seVUws3t92E
+
+Validação própria flask form
+https://codigofacilito.com/videos/14-curso-flask-validaciones-propias
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
+    city = StringField('Cidade', validators=[validators.Length(min=6, max=45, message="Cidade deve ter no mínimo 6 e no máximo 45 caracteres")])
+
+    region = StringField('UF', validators=[validators.Length(min=2, max=2, message="UF deve ter 2 caracteres")])

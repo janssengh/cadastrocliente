@@ -1,0 +1,22 @@
+import ctypes
+import json
+from flask import request, render_template
+from config import app
+from cpf_cnpj import Document
+
+
+@app.route('/cpfcnpjvalidation', methods=['GET','POST'])
+def cpfcnpjvalidation():
+    output = request.get_json()
+    result = json.loads(output) #this converts the json output to a python dictionary
+
+    if result['cpf_cnpj'].isdecimal():
+        print('valida cpf cnpj')
+        cpfcnpj = Document()
+        cpfcnpj.create_document(result['cpf_cnpj'])
+    else:
+        MessageBox = ctypes.windll.user32.MessageBoxW(None, 'CPF/CNPJ inválido !', "Email check", 0x00001000)
+    return render_template('formclient erro.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
